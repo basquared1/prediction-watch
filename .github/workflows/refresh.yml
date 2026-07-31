@@ -1,0 +1,47 @@
+name: Refresh Kalshi snapshot
+
+# Kalshi's API only sends CORS headers for Origin: https://kalshi.com, so the
+# browser can never fetch it directly. This job fetches it server-side (no
+# Origin header -> 200) and commits the snapshot the page reads.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # every 30 minutes (GitHub may delay under load)
+  workflow_dispatch:          # lets you refresh on demand from the Actions tab
+  push:
+    branches: [main]
+    paths: ['scripts/fetch_kalshi.py', '.github/workflows/refresh.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch Kalshi markets
+        run: python scripts/fetch_kalshi.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/kalshi.json; then
+            echo "No change."
+            exit 0
+          fi
+          git add data/kalshi.json
+          git commit -m "data: refresh Kalshi snapshot"
+          # Another scheduled run may have landed first; rebase and retry once.
+          git pull --rebase --autostash origin main || true
+          git push

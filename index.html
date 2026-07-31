@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prediction Watch</title>
+<meta name="description" content="Kalshi and Polymarket in one read-only feed.">
+<meta name="theme-color" content="#0b0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Predictions">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-row">
+    <h1>Prediction&nbsp;Watch</h1>
+    <button id="refresh" class="icon-btn" title="Refresh" aria-label="Refresh">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>
+    </button>
+  </div>
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="search" type="search" placeholder="Search markets…" autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>
+  <nav class="chips" id="chips" aria-label="Topics"></nav>
+  <div class="bar">
+    <div class="status" id="status">Loading…</div>
+    <label class="sort">
+      <span class="sr-only">Sort by</span>
+      <select id="sort">
+        <option value="vol24">24h volume</option>
+        <option value="vol">Total volume</option>
+        <option value="soon">Closing soon</option>
+        <option value="moved">Most decided</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<main id="feed" aria-live="polite"></main>
+
+<footer class="foot">
+  <p>Read-only market data. No betting, wallet, deposit or trade functions.</p>
+  <p id="freshness"></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
